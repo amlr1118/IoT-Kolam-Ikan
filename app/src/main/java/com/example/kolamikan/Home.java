@@ -27,7 +27,7 @@ public class Home extends AppCompatActivity {
     private TextView tVStatusAir;
     private ToggleButton tglRelay;
 
-    //cobaaaag
+    //cobaaaa
 
     private String relayStatus;
     private String id;
