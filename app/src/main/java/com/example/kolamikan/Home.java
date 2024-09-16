@@ -52,6 +52,8 @@ public class Home extends AppCompatActivity {
     private Runnable runnable;
     private final int DELAY = 5000; // 5 detik
 
+    private String airKolam;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,6 +114,15 @@ public class Home extends AppCompatActivity {
                                     // Ambil created_at dari JSON
                                     String createdAtString = riwayatSensor.getString("created_at");
                                     String waktu = riwayatSensor.getString("created_at");
+                                    String kejernihan = riwayatSensor.getString("kejernihan");
+
+                                    if (Integer.parseInt(kejernihan) > 80 ){
+                                        airKolam = "Kotor";
+                                    }else {
+                                        airKolam = "Bersih";
+                                    }
+
+
 
                                     // Format string tanggal dari API ke dalam objek Date
                                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
@@ -142,7 +153,7 @@ public class Home extends AppCompatActivity {
                                             waktu,
                                             "Pompa                : "+riwayatSensor.getString("relay"),
                                             "Nilai Ph               : "+riwayatSensor.getString("ph"),
-                                            "Nilai Kejernihan : "+riwayatSensor.getString("kejernihan"),
+                                            "Nilai Kejernihan : "+riwayatSensor.getString("kejernihan")+" | "+airKolam,
                                             // Ubah format waktu di sini
                                             timeAgo
                                     );
@@ -203,8 +214,10 @@ public class Home extends AppCompatActivity {
 
                                         if (Integer.parseInt(kejernihan) > 80 && Integer.parseInt(ph) > 8){
                                            tVStatusAir.setText("Air kolam kotor, harus diganti !!!");
+
                                         }else {
                                             tVStatusAir.setText("Air kolam jernih");
+
                                         }
 
                                     } catch (JSONException e) {
