@@ -1,8 +1,10 @@
 package com.example.kolamikan;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -15,9 +17,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class Home extends AppCompatActivity {
 
@@ -27,7 +38,12 @@ public class Home extends AppCompatActivity {
     private TextView tVStatusAir;
     private ToggleButton tglRelay;
 
-    //cobaaaa
+    private ArrayList<ModelRiwayatSensor> model;
+
+    private RecyclerView rVData;
+    private RecyclerView.LayoutManager layoutManager;
+
+    private  AdapterRiwayatSensor adapterRiwayatSensor;
 
     private String relayStatus;
     private String id;
@@ -48,6 +64,7 @@ public class Home extends AppCompatActivity {
         });
 
         init();
+        model = new ArrayList<>();
         id ="1";
         cekStatusRelay();
         bacaSensor();
@@ -68,6 +85,93 @@ public class Home extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void getRiwayatSensor(){
+        String url = getString(R.string.api_server)+"/getRiwayatSensor";
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Http http = new Http(Home.this, url);
+                http.setToken(true);
+                http.send();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Integer code = http.getStatusCode();
+                        if (code == 200){
+                            try {
+                                JSONObject response = new JSONObject(http.getResponse());
+                                JSONArray dataArray = response.getJSONArray("data");
+                                model.clear();
+
+                                for (int i = 0; i < dataArray.length(); i++) {
+                                    JSONObject riwayatSensor = dataArray.getJSONObject(i);
+
+                                    // Ambil created_at dari JSON
+                                    String createdAtString = riwayatSensor.getString("created_at");
+                                    String waktu = riwayatSensor.getString("created_at");
+
+                                    // Format string tanggal dari API ke dalam objek Date
+                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                                    Date createdAtDate = null;
+                                    try {
+                                        createdAtDate = sdf.parse(createdAtString);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    // Dapatkan waktu sekarang
+                                    long now = System.currentTimeMillis();
+
+                                    // Tampilkan waktu relatif
+                                    String timeAgo = "";
+                                    if (createdAtDate != null) {
+                                        long createdAtMillis = createdAtDate.getTime();
+                                        timeAgo = DateUtils.getRelativeTimeSpanString(
+                                                createdAtMillis,
+                                                now,
+                                                DateUtils.MINUTE_IN_MILLIS
+                                        ).toString();
+                                    }
+
+                                    // Tambahkan ke model dengan waktu relatif yang dihitung
+                                    ModelRiwayatSensor modelRiwayatPengaduan = new ModelRiwayatSensor(
+                                            riwayatSensor.getString("id"),
+                                            waktu,
+                                            "Pompa                : "+riwayatSensor.getString("relay"),
+                                            "Nilai Ph               : "+riwayatSensor.getString("ph"),
+                                            "Nilai Kejernihan : "+riwayatSensor.getString("kejernihan"),
+                                            // Ubah format waktu di sini
+                                            timeAgo
+                                    );
+                                    model.add(modelRiwayatPengaduan);
+
+                                    //Log.d("Data Materi", String.valueOf(model));
+                                }
+
+                                adapterRiwayatSensor = new AdapterRiwayatSensor(model);
+                                rVData.setAdapter(adapterRiwayatSensor);
+                                adapterRiwayatSensor.setOnItemClickListener(new AdapterRiwayatSensor.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(int position) {
+                                        //idPengaduan = model.get(position).getWaktu();
+
+                                    }
+                                });
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        else{
+                            Toast.makeText(Home.this, "Error "+code, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 
     private void bacaSensor(){
@@ -94,6 +198,8 @@ public class Home extends AppCompatActivity {
 
                                         tVJernih.setText("Nilai Kejernihan : " + kejernihan);
                                         tVPH.setText("Ph : " + ph);
+
+                                        getRiwayatSensor();
 
                                         if (Integer.parseInt(kejernihan) > 80 && Integer.parseInt(ph) > 8){
                                            tVStatusAir.setText("Air kolam kotor, harus diganti !!!");
@@ -248,5 +354,10 @@ public class Home extends AppCompatActivity {
         tVPH = findViewById(R.id.tVPH);
         tglRelay = findViewById(R.id.tglRelay);
         tVStatusAir = findViewById(R.id.tVStatusAir);
+
+        rVData = findViewById(R.id.rVData);
+        rVData.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this);
+        rVData.setLayoutManager(layoutManager);
     }
 }
