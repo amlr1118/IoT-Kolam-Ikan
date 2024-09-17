@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.format.DateUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,13 +38,9 @@ public class Home extends AppCompatActivity {
     private TextView tVPH;
     private TextView tVStatusAir;
     private ToggleButton tglRelay;
+    private Button btnRiwayat;
 
-    private ArrayList<ModelRiwayatSensor> model;
 
-    private RecyclerView rVData;
-    private RecyclerView.LayoutManager layoutManager;
-
-    private  AdapterRiwayatSensor adapterRiwayatSensor;
 
     private String relayStatus;
     private String id;
@@ -52,7 +49,7 @@ public class Home extends AppCompatActivity {
     private Runnable runnable;
     private final int DELAY = 5000; // 5 detik
 
-    private String airKolam;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +63,6 @@ public class Home extends AppCompatActivity {
         });
 
         init();
-        model = new ArrayList<>();
         id ="1";
         cekStatusRelay();
         bacaSensor();
@@ -87,103 +83,14 @@ public class Home extends AppCompatActivity {
             }
         });
 
+        btnRiwayat.setOnClickListener(view -> {
+            Intent intent = new Intent(Home.this,RiwayatSensor.class);
+            startActivity(intent);
+        });
+
     }
 
-    private void getRiwayatSensor(){
-        String url = getString(R.string.api_server)+"/getRiwayatSensor";
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Http http = new Http(Home.this, url);
-                http.setToken(true);
-                http.send();
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Integer code = http.getStatusCode();
-                        if (code == 200){
-                            try {
-                                JSONObject response = new JSONObject(http.getResponse());
-                                JSONArray dataArray = response.getJSONArray("data");
-                                model.clear();
-
-                                for (int i = 0; i < dataArray.length(); i++) {
-                                    JSONObject riwayatSensor = dataArray.getJSONObject(i);
-
-                                    // Ambil created_at dari JSON
-                                    String createdAtString = riwayatSensor.getString("created_at");
-                                    String waktu = riwayatSensor.getString("created_at");
-                                    String kejernihan = riwayatSensor.getString("kejernihan");
-
-                                    if (Integer.parseInt(kejernihan) > 80 ){
-                                        airKolam = "Kotor";
-                                    }else {
-                                        airKolam = "Bersih";
-                                    }
-
-
-
-                                    // Format string tanggal dari API ke dalam objek Date
-                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                                    Date createdAtDate = null;
-                                    try {
-                                        createdAtDate = sdf.parse(createdAtString);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    // Dapatkan waktu sekarang
-                                    long now = System.currentTimeMillis();
-
-                                    // Tampilkan waktu relatif
-                                    String timeAgo = "";
-                                    if (createdAtDate != null) {
-                                        long createdAtMillis = createdAtDate.getTime();
-                                        timeAgo = DateUtils.getRelativeTimeSpanString(
-                                                createdAtMillis,
-                                                now,
-                                                DateUtils.MINUTE_IN_MILLIS
-                                        ).toString();
-                                    }
-
-                                    // Tambahkan ke model dengan waktu relatif yang dihitung
-                                    ModelRiwayatSensor modelRiwayatPengaduan = new ModelRiwayatSensor(
-                                            riwayatSensor.getString("id"),
-                                            waktu,
-                                            "Pompa                : "+riwayatSensor.getString("relay"),
-                                            "Nilai Ph               : "+riwayatSensor.getString("ph"),
-                                            "Nilai Kejernihan : "+riwayatSensor.getString("kejernihan")+" | "+airKolam,
-                                            // Ubah format waktu di sini
-                                            timeAgo
-                                    );
-                                    model.add(modelRiwayatPengaduan);
-
-                                    //Log.d("Data Materi", String.valueOf(model));
-                                }
-
-                                adapterRiwayatSensor = new AdapterRiwayatSensor(model);
-                                rVData.setAdapter(adapterRiwayatSensor);
-                                adapterRiwayatSensor.setOnItemClickListener(new AdapterRiwayatSensor.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(int position) {
-                                        //idPengaduan = model.get(position).getWaktu();
-
-                                    }
-                                });
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        else{
-                            Toast.makeText(Home.this, "Error "+code, Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-            }
-        }).start();
-    }
 
     private void bacaSensor(){
         String url = getString(R.string.api_server) + "/baca-sensor-ph-kejernihan";
@@ -210,7 +117,7 @@ public class Home extends AppCompatActivity {
                                         tVJernih.setText("Nilai Kejernihan : " + kejernihan);
                                         tVPH.setText("Ph : " + ph);
 
-                                        getRiwayatSensor();
+                                        //getRiwayatSensor();
 
                                         if (Integer.parseInt(kejernihan) > 80 && Integer.parseInt(ph) > 8){
                                            tVStatusAir.setText("Air kolam kotor, harus diganti !!!");
@@ -368,9 +275,6 @@ public class Home extends AppCompatActivity {
         tglRelay = findViewById(R.id.tglRelay);
         tVStatusAir = findViewById(R.id.tVStatusAir);
 
-        rVData = findViewById(R.id.rVData);
-        rVData.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this);
-        rVData.setLayoutManager(layoutManager);
+        btnRiwayat = findViewById(R.id.btnRiwayat);
     }
 }
