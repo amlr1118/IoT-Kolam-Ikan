@@ -84,7 +84,7 @@ public class Home extends AppCompatActivity {
         });
 
         btnRiwayat.setOnClickListener(view -> {
-            Intent intent = new Intent(Home.this,RiwayatSensor.class);
+            Intent intent = new Intent(Home.this,TabelSensor.class);
             startActivity(intent);
         });
 

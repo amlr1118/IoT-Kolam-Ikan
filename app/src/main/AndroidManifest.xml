@@ -15,9 +15,13 @@
         android:theme="@style/Theme.KolamIkan"
         tools:targetApi="31">
         <activity
-            android:name=".RiwayatSensor"
+            android:name=".TabelSensor"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity
+            android:name=".RiwayatSensor"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".Home"
             android:exported="true"
