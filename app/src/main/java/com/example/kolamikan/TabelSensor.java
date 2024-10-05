@@ -41,6 +41,7 @@ public class TabelSensor extends AppCompatActivity {
 
         tableLayout = findViewById(R.id.tableLayout);
         getRiwayatSensor();
+        //xxxxxxhxhxhxhx
 
 
     }
@@ -88,7 +89,7 @@ public class TabelSensor extends AppCompatActivity {
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
-
+//xxxxxxxx
                                     // Dapatkan waktu sekarang
                                     long now = System.currentTimeMillis();
 
