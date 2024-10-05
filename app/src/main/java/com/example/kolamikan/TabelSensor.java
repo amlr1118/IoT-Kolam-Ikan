@@ -89,7 +89,7 @@ public class TabelSensor extends AppCompatActivity {
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
-//xxxxxxxx
+//xxxxxxxxggggg
                                     // Dapatkan waktu sekarang
                                     long now = System.currentTimeMillis();
 
