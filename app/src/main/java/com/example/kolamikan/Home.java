@@ -119,7 +119,7 @@ public class Home extends AppCompatActivity {
 
                                         //getRiwayatSensor();
 
-                                        if (Integer.parseInt(kejernihan) > 80 && Integer.parseInt(ph) > 8){
+                                        if (Double.parseDouble(kejernihan) > 80 && Double.parseDouble(ph) > 8){
                                            tVStatusAir.setText("Air kolam kotor, harus diganti !!!");
 
                                         }else {

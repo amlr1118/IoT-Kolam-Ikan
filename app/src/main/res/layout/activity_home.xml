@@ -27,8 +27,8 @@
         android:layout_marginEnd="8dp"
         android:text="Alat IoT Monitoring Kekeruhan dan PH Air dan Sirkulasi Air Pada Kolam Tambak Ikan"
         android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,8 +40,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="TextView"
-        android:textColor="@color/black"
-        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,8 +55,8 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:text="Kejernihan"
-        android:textColor="@color/black"
-        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -71,8 +71,8 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:text="PH"
-        android:textColor="@color/black"
-        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -87,10 +87,11 @@
         android:layout_marginEnd="8dp"
         android:text=""
         android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tVPH" />
 
@@ -106,6 +107,30 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tVStatusAir" />
+
+
+    <ImageView
+        android:layout_width="98dp"
+        android:layout_height="83dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/bg2"
+        app:layout_constraintEnd_toStartOf="@+id/tglRelay"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <ImageView
+        android:layout_width="98dp"
+        android:layout_height="83dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/bg1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.595"
+        app:layout_constraintStart_toEndOf="@+id/tglRelay"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

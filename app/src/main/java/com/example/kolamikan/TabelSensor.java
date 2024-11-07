@@ -73,13 +73,11 @@ public class TabelSensor extends AppCompatActivity {
                                     String kejernihan = riwayatSensor.getString("kejernihan");
                                     String ph = riwayatSensor.getString("ph");
 
-                                    if (Integer.parseInt(kejernihan) > 80 ){
+                                    if (Double.parseDouble(kejernihan) > 80 && Double.parseDouble(ph) > 8){
                                         airKolam = "Kotor";
                                     }else {
                                         airKolam = "Bersih";
                                     }
-
-
 
                                     // Format string tanggal dari API ke dalam objek Date
                                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
